@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "connector.fullname" . }}-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: "/{{ include "connector.fullname" . }}/health(/|$)(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "connector.fullname" . }}-controlplane
+                port:
+                  number: {{ .Values.controlplane.ports.web }}
+          - path: "/{{ include "connector.fullname" . }}/cp(/|$)(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "connector.fullname" . }}-controlplane
+                port:
+                  number: {{ .Values.controlplane.ports.management }}
+          - path: "/{{ include "connector.fullname" . }}/public(/|$)(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "connector.fullname" . }}-dataplane
+                port:
+                  number: {{ .Values.dataplane.ports.public }}
+          - path: "/{{ include "connector.fullname" . }}/fc(/|$)(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "connector.fullname" . }}-controlplane
+                port:
+                  number: {{ .Values.controlplane.ports.catalog }}

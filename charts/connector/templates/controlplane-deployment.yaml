@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "connector.fullname" . }}-controlplane
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "connector.fullname" . }}-controlplane
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "connector.fullname" . }}-controlplane
+  template:
+    metadata:
+      labels:
+        app: {{ include "connector.fullname" . }}-controlplane
+    spec:
+      containers:
+        - name: connector
+          image: "{{ .Values.controlplane.image.repository }}:{{ .Values.controlplane.image.tag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "connector.fullname" . }}-controlplane-config
+          volumeMounts:
+            - name: participants-volume
+              mountPath: /etc/participants
+          ports:
+            - containerPort: {{ .Values.controlplane.ports.management }}
+              name: management-port
+            - containerPort: {{ .Values.controlplane.ports.web }}
+              name: default-port
+            - containerPort: {{ .Values.controlplane.ports.debug }}
+              name: debug-port
+      volumes:
+        - name: participants-volume
+          configMap:
+            name: {{ include "connector.fullname" . }}-participants

@@ -1,0 +1,37 @@
+imagePullPolicy: IfNotPresent
+controlplane:
+  image:
+    repository: controlplane
+    tag: latest
+  ports:
+    web: 8080
+    management: 8081
+    protocol: 8082
+    control: 8083
+    catalog: 8084
+    debug: 1044
+
+dataplane:
+  image:
+    repository: dataplane
+    tag: latest
+  ports:
+    web: 8080
+    control: 8083
+    public: 11002
+    debug: 1055
+
+participantId: "did:web:participant"
+namespace: default
+vault:
+  url: http://vault:8200
+  token: root
+stsTokenUrl: http://sts/token
+jdbc:
+  url: jdbc:postgresql://postgres:5432/edc
+  user: edc
+  password: edc
+participantsList:
+  consumer-corp: "did:web:consumer"
+  provider-corp: "did:web:provider"
+useSVE: false
