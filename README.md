@@ -4,7 +4,7 @@ This repository contains helper resources to build the [Minimum Viable Dataspace
 
 ## Dockerfile
 
-The provided `Dockerfile` clones the MVD repository and builds the runtime images using the Gradle tasks documented in the MVD project. After building, the Docker cache contains the images `controlplane:latest`, `dataplane:latest`, `catalog-server:latest` and `identity-hub:latest`.
+The provided `Dockerfile` clones the MVD repository and builds the runtime images using the Gradle tasks documented in the MVD project. A temporary Docker daemon is started inside the build container so the `dockerize` tasks can create the images `controlplane:latest`, `dataplane:latest`, `catalog-server:latest` and `identity-hub:latest`.
 
 Build the images with:
 
@@ -12,7 +12,7 @@ Build the images with:
 docker build -t mvd-builder .
 ```
 
-The resulting container image `mvd-builder` only contains the repository with the built images in its Docker cache.
+The resulting container image `mvd-builder` contains the MVD repository along with the Docker images produced by the build.
 
 ## Helm chart
 
