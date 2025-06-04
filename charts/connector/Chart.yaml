@@ -1,0 +1,5 @@
+apiVersion: v2
+name: connector
+version: 0.1.0
+appVersion: "1.0"
+description: Helm chart for Eclipse EDC Minimum Viable Dataspace Connector

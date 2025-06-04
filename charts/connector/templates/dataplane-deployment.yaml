@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "connector.fullname" . }}-dataplane
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "connector.fullname" . }}-dataplane
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "connector.fullname" . }}-dataplane
+  template:
+    metadata:
+      labels:
+        app: {{ include "connector.fullname" . }}-dataplane
+    spec:
+      containers:
+        - name: dataplane
+          image: "{{ .Values.dataplane.image.repository }}:{{ .Values.dataplane.image.tag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "connector.fullname" . }}-dataplane-config
+          ports:
+            - containerPort: {{ .Values.dataplane.ports.public }}
+              name: public-port
+            - containerPort: {{ .Values.dataplane.ports.debug }}
+              name: debug-port

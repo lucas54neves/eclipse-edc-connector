@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "connector.fullname" . }}-controlplane
+  namespace: {{ .Values.namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: {{ include "connector.fullname" . }}-controlplane
+  ports:
+    - name: health
+      port: {{ .Values.controlplane.ports.web }}
+    - name: management
+      port: {{ .Values.controlplane.ports.management }}
+    - name: catalog
+      port: {{ .Values.controlplane.ports.catalog }}
+    - name: protocol
+      port: {{ .Values.controlplane.ports.protocol }}
+    - name: debug
+      port: {{ .Values.controlplane.ports.debug }}
+    - name: control
+      port: {{ .Values.controlplane.ports.control }}
